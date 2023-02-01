@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -48,6 +49,17 @@ public class FundamentosApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		//ejemplosAnteriores();
 		saveUsersInDataBase();
+		getInformationJpqFromUser();
+	}
+
+	private void getInformationJpqFromUser(){
+		LOGGER.info("Usuario con el metodo findbyuserMail" +
+				userRepository.findByUserEmail("arielcastromejia@gmail.com").
+						orElseThrow(()-> new RuntimeException("No se encontro el usuario")));
+
+		userRepository.findAndSort("user", Sort.by("id").descending())
+				.stream()
+				.forEach(user -> LOGGER.info("usuario con metodo Sort" + user));
 	}
 
 	private void saveUsersInDataBase(){
@@ -60,9 +72,9 @@ public class FundamentosApplication implements CommandLineRunner {
 		User user7 = new User("Kennet", "kennet@gmail.com", LocalDate.of(2023,07,7));
 		User user8 = new User("Olvin", "olvin@gmail.com", LocalDate.of(2023,8,8));
 		User user9 = new User("Hector", "hector@gmail.com", LocalDate.of(2023,9,9));
-		User user10 = new User("Ana", "ana@gmail.com", LocalDate.of(2023,10,10));
-		User user11 = new User("Elisa", "elisa@gmail.com", LocalDate.of(2023,11,11));
-		User user12 = new User("Tiffany", "tiffany@gmail.com", LocalDate.of(2023,12,12));
+		User user10 = new User("user2", "ana@gmail.com", LocalDate.of(2023,10,10));
+		User user11 = new User("user3", "elisa@gmail.com", LocalDate.of(2023,11,11));
+		User user12 = new User("user4", "tiffany@gmail.com", LocalDate.of(2023,12,12));
 
 		List<User> list = Arrays.asList(user1, user2, user3, user4, user5, user6, user7, user8, user9, user10, user11, user12);
 		list.stream().forEach(userRepository::save);
